@@ -3,7 +3,7 @@
 import sys
 import os, string, shutil, glob, time, datetime, socket
 
-inFileName = "out.txt"
+inFileName = "out.text"
 inFile = open(inFileName, 'r')
 lines = inFile.readlines()
 inFile.close()
@@ -18,7 +18,7 @@ row = -1
 for line in lines:
     words = line.split()
     if len(words) > 0:
-        #print(line)
+        print(line)
         if line.find('Case') >= 0:
             #print(words)
             row = row + 1
@@ -44,10 +44,12 @@ for line in lines:
                     location.append(line[pos + 1:endPos - 1])
         
         elif line.find('Incident') >= 0:
-            #print(words)
+            print(words)
             pos = line.rfind(':')
             incidents = incidents + 1
-            row = row + incidents
+            row = row + 1
+            print ('caseRow = ', caseRow, caseNo[caseRow])
+            print ('row = ', row)
             if (caseRow == row):
                 incident.append(line[pos + 1:])
             elif (caseRow < row):
