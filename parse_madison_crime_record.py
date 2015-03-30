@@ -3,7 +3,10 @@
 import sys
 import os, string, shutil, glob, time, datetime, socket
 
-inFileName = "3.txt"
+#inFileName = "160.txt"
+print 'Number of arguments:', len(sys.argv), 'arguments.'
+print 'Argument List:', str(sys.argv)
+inFileName = sys.argv[1]
 inFile = open(inFileName, 'r')
 lines = inFile.readlines()
 inFile.close()
