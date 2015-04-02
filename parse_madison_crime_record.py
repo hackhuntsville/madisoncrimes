@@ -19,7 +19,7 @@ location = []
 incident = []
 latitude = []
 longitude = []
-sep = " % "
+sep = "%"
 
 initial_row_id = 1615
 row = -1
@@ -29,6 +29,7 @@ incidents = -1
 
 # uncomment and edit following line to add your Google API key.
 #my_google_api_key = "USE_GOOGLE_API_KEY"
+my_google_api_key = "AIzaSyDu2mhJ1VTT2XcqmL8868DaG_P46m_Y5gg"
 
 geolocator = GoogleV3(api_key=my_google_api_key)
 
@@ -101,7 +102,7 @@ for line in lines:
                 incident.append(line[pos + 1:])
                 i = caseRow
                 row_id = i + initial_row_id
-                out_str = str(i) + sep + caseNo[i] + sep + time_of_day[i] + sep + shift[i] + sep + date_of_day[i] + sep + location[i] + sep + latitude[i] + sep + longitude[i] + sep + incident[i]
+                out_str = str(row_id) + sep + caseNo[i] + sep + time_of_day[i] + sep + shift[i] + sep + date_of_day[i] + sep + location[i] + sep + latitude[i] + sep + longitude[i] + sep + incident[i]
                 print(out_str[:-1])
 
             elif (caseRow < (row + incidents)):
@@ -109,7 +110,7 @@ for line in lines:
                 caseNo.append(caseNo[caseRow])
                 time_of_day.append(time_of_day[caseRow])
                 shift.append(shift[caseRow])
-                date_of_day.append(shift[caseRow])
+                date_of_day.append(date_of_day[caseRow])
                 location.append(location[caseRow])
                 latitude.append(latitude[caseRow])
                 longitude.append(longitude[caseRow])
@@ -117,7 +118,7 @@ for line in lines:
 
                 i = row
                 row_id = i + initial_row_id
-                out_str = str(i) + sep + caseNo[i] + sep + time_of_day[i] + sep + shift[i] + sep + date_of_day[i] + sep + location[i] + sep + latitude[i] + sep + longitude[i] + sep + incident[i]
+                out_str = str(row_id) + sep + caseNo[i] + sep + time_of_day[i] + sep + shift[i] + sep + date_of_day[i] + sep + location[i] + sep + latitude[i] + sep + longitude[i] + sep + incident[i]
                 print(out_str[:-1])
                     
 #print(row)
