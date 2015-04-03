@@ -31,17 +31,17 @@ try:
     reader = csv.DictReader(inFile, delimiter = '%')
     for row in reader:
         i = i + 1
-        caseNo.append(row[' case_no '].strip(" "))
-        time_of_day.append(row[' time '].strip(" "))
-        shift.append(row[' shift '].strip(" "))
-        if row[' date '] == row[' shift ']:
+        caseNo.append(row['case_no'].strip(" "))
+        time_of_day.append(row['time'].strip(" "))
+        shift.append(row['shift'].strip(" "))
+        if row['date'] == row['shift']:
             date_of_day.append(date_of_day[i - 1])
         else:
-            date_of_day.append(row[' date '].strip(" "))
-        location.append(row[' location '].strip(" "))
-        latitude.append(row[' latitude '].strip(" "))
-        longitude.append(row[' longitude '].strip(" "))
-        incident.append(row[' incident_type'].strip(" "))
+            date_of_day.append(row['date'].strip(" "))
+        location.append(row['location'].strip(" "))
+        latitude.append(row['latitude'].strip(" "))
+        longitude.append(row['longitude'].strip(" "))
+        incident.append(row['incident_type'].strip(" "))
         
 finally:
     inFile.close()
