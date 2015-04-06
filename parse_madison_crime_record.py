@@ -21,7 +21,7 @@ latitude = []
 longitude = []
 sep = "%"
 
-initial_row_id = 1615
+initial_row_id = 0
 row = -1
 incidents = -1
 
@@ -70,7 +70,7 @@ for line in lines:
                     time.sleep(delay_time)
                     
                     try:
-                        geolocation = geolocator.geocode(address, timeout=1)
+                        geolocation = geolocator.geocode(address, timeout=2)
                     
                     except:
                         latitude_str = "NA_EXCEPTION"
