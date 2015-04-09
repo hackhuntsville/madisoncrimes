@@ -28,7 +28,7 @@
     <script>
 // Adding 500 Data Points
 var map, pointarray, heatmap;
-var dataFile;
+var dataFile, year, dayShift, crimeType;
 
 var crimeData = [
     new google.maps.LatLng(34.7119474, -86.7608408),
@@ -51,6 +51,8 @@ function initialize() {
     data: pointArray
   });
 
+  heatmap.set('maxIntensity', 15);
+  
   heatmap.setMap(map);
 }
 
@@ -100,7 +102,7 @@ function changeRadius() {
 }
 
 function changeMaxIntensity() {
-  heatmap.set('maxIntensity', heatmap.get('maxIntensity') ? null : 5);
+  heatmap.set('maxIntensity', (heatmap.get('maxIntensity') == 15) ? 5 : 15);
 }
 
 function changeOpacity() {
@@ -117,15 +119,57 @@ function loadData() {
         //console.log(contents);
                 
         var data = $.csv.toObjects(contents, { separator : '%'});
+        
         //console.log(data);
                
         var i, len;
         len = data.length;
         var newData = [];
-        for(i = 0; i < len; i++) {
-            //console.log(data[i].latitude);
-            //console.log(data[i].longitude);
-            newData.push(new google.maps.LatLng(Number(data[i].latitude), Number(data[i].longitude)));
+
+        //window.alert(year.value + "\n" + dayShift.value + "\n" + crimeType.value);
+        
+        if (year.value == "all" && dayShift.value == "all" && crimeType.value == "all") {
+            for(i = 0; i < len; i++) {
+                //console.log(data[i].latitude);
+                //console.log(data[i].longitude);
+                newData.push(new google.maps.LatLng(Number(data[i].latitude), Number(data[i].longitude)));
+            }
+        } else if (year.value == "all" && dayShift.value == "all" && crimeType.value != "all") {        
+        
+            for(i = 0; i < len; i++) {
+                //console.log(data[i].latitude);
+                //console.log(data[i].longitude);
+                if (data[i].incident_type.indexOf(crimeType.value) > -1) {
+                    newData.push(new google.maps.LatLng(Number(data[i].latitude), Number(data[i].longitude)));
+                }
+            }
+        } else if (year.value == "all" && dayShift.value != "all" && crimeType.value == "all") {        
+        
+            for(i = 0; i < len; i++) {
+                //console.log(data[i].latitude);
+                //console.log(data[i].longitude);
+                if (data[i].shift.indexOf(dayShift.value) > -1) {
+                    newData.push(new google.maps.LatLng(Number(data[i].latitude), Number(data[i].longitude)));
+                }
+            }
+        } else if (year.value != "all" && dayShift.value == "all" && crimeType.value == "all") {        
+        
+            for(i = 0; i < len; i++) {
+                //console.log(data[i].latitude);
+                //console.log(data[i].longitude);
+                if (data[i].date.indexOf(year.value) > -1) {
+                    newData.push(new google.maps.LatLng(Number(data[i].latitude), Number(data[i].longitude)));
+                }
+            }
+        } else {        
+        
+            for(i = 0; i < len; i++) {
+                //console.log(data[i].latitude);
+                //console.log(data[i].longitude);
+                if (data[i].date.indexOf(year.value) > -1 && data[i].shift.indexOf(dayShift.value) > -1 && data[i].incident_type.indexOf(crimeType.value) > -1) {
+                    newData.push(new google.maps.LatLng(Number(data[i].latitude), Number(data[i].longitude)));
+                }
+            }
         }
                 
         updateHeatMapData(newData);
@@ -145,11 +189,48 @@ google.maps.event.addDomListener(window, 'load', initialize);
       <button onclick="changeRadius()">Change radius</button>
       <button onclick="changeOpacity()">Change opacity</button>
       <button onclick="changeMaxIntensity()">Change MaxIntensity</button>
-      <input type="file" id="dataFile">
+      <input type="file" id="dataFile"/>
+      <label for="year">Year</label>
+      <input type="text" id = "year" list = "yearDataList"/>
+      <datalist id = "yearDataList">
+        <option value = "all"/>
+        <option value = "2009"/>
+        <option value = "2010"/>
+        <option value = "2011"/>
+        <option value = "2012"/>
+        <option value = "2013"/>
+        <option value = "2014"/>
+        <option value = "2015"/>
+      </datalist>
+      
+      <label for="dayShift">Shift</label>
+      <input type="text" id = "dayShift" list = "dayShiftDataList"/>
+      <datalist id = "dayShiftDataList">
+        <option value = "all"/>
+        <option value = "I"/>
+        <option value = "II"/>
+        <option value = "III"/>
+      </datalist>
+
+      <label for="crimeType">Type of Crime</label>
+      <input type="text" id = "crimeType" list = "crimeTypeDataList"/>
+      <datalist id = "crimeTypeDataList">
+        <option value = "all"/>
+        <option value = "IDENTITY THEFT"/>
+        <option value = "CRIMINAL MISCHIEF"/>
+        <option value = "AUTO THEFT"/>
+        <option value = "DOMESTIC VIOLENCE"/>
+        <option value = "BURGLARY"/>
+        <option value = "HARASSING COMMUNICATIONS"/>
+      </datalist>
+      
       <button onclick="loadData()">Update Map Data</button>
 
       <script>
           dataFile = $("#dataFile")[0];
+          year = document.getElementById("year");
+          dayShift = document.getElementById("dayShift");
+          crimeType = document.getElementById("crimeType");
       </script>
    </div>
     <div id="map-canvas"></div>
