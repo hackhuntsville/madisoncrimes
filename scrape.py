@@ -2,14 +2,11 @@
 
 import os
 import subprocess
-import sys
-import re
 
 import pandas as pd
 
 from lxml import html
 import requests
-import urllib2
 
 MADISON_URL = 'https://www.madisonal.gov/Archive.aspx'
 
@@ -45,45 +42,6 @@ def download_pdf(file):
 def convert_to_text(file):
     return subprocess.check_output(["pdftotext", "-nopgbrk", "-layout",
                 ('pdfs/' + file), '-']).split('\n')
-
-def clean_lines(lines):
-    lines_new = []
-    for line in lines:
-        if line == '\n':
-            continue
-
-        s = ['Madison Police Department',
-             'Incident Report',
-             'indicent report']
-
-        find = [line.find(x) >= 0 for x in s]
-        line = line.strip('\n')
-        line = line.strip('\x0c')
-
-        if (line.find('( ') >= 0 and
-           line.find(' )') >= 0 and
-           (line.find('To') >= 0 or line.find('to') >= 0)):
-           continue
-
-        if any(find):
-            continue
-
-        s = [ 'Case No.:',
-              'Date Reported:',
-              'Time:',
-              'Shift:',
-              'Location:',
-              'Incident:']
-
-        find = [line.find(x) >=0 for x in s]
-
-        if not any(find) and len(lines_new) >= 1:
-            lines_new[-1] = lines_new[-1] + " " + line
-        else:
-            line = line.strip('\n')
-            lines_new.append(line)
-
-    return lines_new
 
 def extract_records(lines, file=None):
     records = []
@@ -131,9 +89,11 @@ def extract_records(lines, file=None):
             if file:
                 record['File'] = file
             record['Case'] = cno_lines[key]
-            record['Time'] = time[0]
-            record['Date'] = date[0]
-            #record['DateTime'] = pd.to_datetime(
+            datetime = pd.to_datetime( time[0] + ' ' + date[0],
+                format='%I:%M %p %B %d, %Y',
+                errors='raise', utc=False)
+
+            record['DateTime'] = datetime
             record['Shift'] = shift[0]
             record['Address'] = loc[0]
             record['Incident'] = inc
@@ -173,5 +133,7 @@ if __name__ == '__main__':
         lines = clean_lines_layout(lines)
         records = extract_records(lines, file)
         all_records.extend(records)
-    print pd.DataFrame(all_records)
 
+    df = pd.DataFrame(all_records)
+
+    df.to_csv('test.csv')
